@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SMM Manager</title>
+<meta name="theme-color" content="#12372f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1ef;--card:#fff;--ink:#14201c;--mut:#5d6b66;--line:#d9e0dc;--brand:#12372f;--ok:#0e7c4f;--warn:#b86e00;--bad:#b3261e;--run:#2457a6;--r:10px}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Hind Siliguri",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45;padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:var(--brand);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;display:flex;align-items:center;gap:10px}
+header h1{font-size:17px;font-weight:700;flex:1}
+header small{opacity:.75;font-size:12px}
+main{max-width:760px;margin:0 auto;padding:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:10px}
+.row{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.mut{color:var(--mut);font-size:13px}
+.t{font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.grid>div{background:#f5f8f6;border-radius:8px;padding:6px 8px;min-width:0}
+.grid b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid span{font-size:11px;color:var(--mut)}
+.chip{font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.run{color:var(--run)}
+.bar{height:6px;background:#e3e9e6;border-radius:9px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok)}
+.bar.s i{background:var(--warn)}
+button,.btn{font:inherit;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:7px 12px;cursor:pointer}
+button.p{background:var(--brand);color:#fff;border-color:var(--brand)}
+button.d{color:var(--bad)}
+button:disabled{opacity:.5}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--run);outline-offset:1px}
+input,select,textarea{font:inherit;width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff;color:var(--ink)}
+label{display:block;font-size:13px;color:var(--mut);margin:8px 0 3px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px;padding-bottom:2px}
+.tabs button{white-space:nowrap;border-radius:99px;padding:5px 12px;font-size:13px}
+.tabs button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav button{flex:1;border:0;border-radius:0;background:none;padding:9px 2px 8px;font-size:12px;color:var(--mut)}
+nav button b{display:block;font-size:18px;line-height:1.1}
+nav button.on{color:var(--brand);font-weight:700}
+.empty{text-align:center;color:var(--mut);padding:28px 10px}
+.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.sum div{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:8px;text-align:center}
+.sum b{display:block;font-size:20px}
+.sum span{font-size:12px;color:var(--mut)}
+.score{font-size:30px;font-weight:700;line-height:1}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom));background:#14201c;color:#fff;padding:8px 14px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9;max-width:90%}
+#toast.on{opacity:1}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}
+.lock{max-width:380px;margin:12vh auto;padding:0 14px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(max-width:380px){.grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header><h1>SMM Manager</h1><small id="upd"></small><button id="rf" class="p" hidden>⟳ আপডেট</button></header>
+<main id="v"></main>
+<nav id="nav" hidden>
+  <button data-t="track"><b>📦</b>অর্ডার</button>
+  <button data-t="svc"><b>🔎</b>সার্ভিস</button>
+  <button data-t="new"><b>➕</b>নতুন</button>
+  <button data-t="qual"><b>⭐</b>কোয়ালিটি</button>
+  <button data-t="set"><b>⚙️</b>সেটিং</button>
+</nav>
+<div id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
